@@ -1,8 +1,9 @@
-<Configuration ID="bd4e0d3c-8d0b-46a3-9ef2-e0113402634c">
-  <Add OfficeClientEdition="64" Channel="PerpetualVL2021" MigrateArch="TRUE">
-    <Product ID="ProPlus2021Volume" PIDKEY="FXYTK-NJJ8C-GB6DW-3DYQT-6F7TH">
+<Configuration ID="b9d5bab3-499d-49af-b410-825f469b274d">
+  <Add OfficeClientEdition="64" Channel="SemiAnnual" MigrateArch="TRUE">
+    <Product ID="O365ProPlusRetail">
       <Language ID="MatchOS" />
       <Language ID="MatchPreviousMSI" />
+      <ExcludeApp ID="Groove" />
       <ExcludeApp ID="Lync" />
       <ExcludeApp ID="OneDrive" />
       <ExcludeApp ID="Teams" />
@@ -10,6 +11,7 @@
     <Product ID="VisioPro2021Volume" PIDKEY="KNH8D-FGHT4-T8RK3-CTDYJ-K2HT4">
       <Language ID="MatchOS" />
       <Language ID="MatchPreviousMSI" />
+      <ExcludeApp ID="Groove" />
       <ExcludeApp ID="Lync" />
       <ExcludeApp ID="OneDrive" />
       <ExcludeApp ID="Teams" />
@@ -17,6 +19,7 @@
     <Product ID="ProjectPro2021Volume" PIDKEY="FTNWT-C6WBT-8HMGF-K9PRX-QV9H8">
       <Language ID="MatchOS" />
       <Language ID="MatchPreviousMSI" />
+      <ExcludeApp ID="Groove" />
       <ExcludeApp ID="Lync" />
       <ExcludeApp ID="OneDrive" />
       <ExcludeApp ID="Teams" />
