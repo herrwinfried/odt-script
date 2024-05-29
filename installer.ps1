@@ -15,42 +15,29 @@ if (-Not (Test-Path "$PSScriptRoot/lang/en-US/$GetScriptName.psd1")) {
 }
 # language support complete
 
-$Host.UI.RawUI.WindowTitle = "HerrWinfried - $($Language.ScriptTitle)"
+$Host.UI.RawUI.WindowTitle = "$($Language.ScriptTitle -f 'herrwinfried')"
 
 [string]$Global:ConfigPath = "$GetScriptDir\Configuration.xml"
+[string]$Global:ODTPath = "$GetScriptDir\odt.exe"
+[string]$Global:ODTDownloadURL = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_17531-20046.exe"
+[string]$Global:SetupPath = "$GetScriptDir\setup.exe"
+[string]$Global:ConfigGeneratorURL = "https://config.office.com/deploymentsettings"
+[string]$Global:GetOfficePath = "$GetScriptDir\office"
 
-function Invoke-ODTExtraction {
-    $odtPath = "$GetScriptDir\odt.exe"
-    $odtDownloadUrl = "https://download.microsoft.com/download/2/7/A/27AF1BE6-DD20-4CB4-B154-EBAB8A7D4A7E/officedeploymenttool_17531-20046.exe"
+function Test-Setup {
 
-    if (-Not (Test-Path $odtPath)) {
-        Write-Host "$($Language.NotFoundOdt) $($Language.DownloadInternet)"
-        Write-Information "$odtDownloadUrl"
-        
-        try {
-            Invoke-WebRequest -Uri $odtDownloadUrl -OutFile $odtPath
-            Write-Host -ForegroundColor Green "$($Language.OdtDownload)"
-        } catch {
-            Write-Host -ForegroundColor Red "$($Language.OdtDownloadNot)"
+    if (-Not (Test-Path $SetupPath)) {
+        Write-Host "$($Language.TestSetup)"
+        if (-Not (Invoke-ODTExtraction)) {
             return $false
         }
     }
-
-    Write-Host -ForegroundColor Cyan "$($Language.OdtSetupExeExt)"
-    & $odtPath /extract:$GetScriptDir /quiet
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host -ForegroundColor Green "$($Language.OdtSetupExe)"
-        return $true
-    } else {
-        Write-Host -ForegroundColor Red "$($Language.OdtSetupExeNot)"
-        return $false
-    }
+    return $true
 }
 
-function Test-SetupExe {
-    $SetupPath = "$GetScriptDir\setup.exe"
-    if (-Not (Test-Path $SetupPath)) {
-        Write-Host "$($Language.TestSetupExe)"
+function Test-ODT {
+
+    if (-Not (Test-Path $ODTPath)) {
         if (-Not (Invoke-ODTExtraction)) {
             return $false
         }
@@ -59,51 +46,73 @@ function Test-SetupExe {
 }
 
 function Test-ConfigFile {
-    if (-Not (Test-Path $Global:ConfigPath)) {
-        Write-Host -ForegroundColor Red "$($Language.TestConfigFileInfo -f $Global:ConfigPath)"
-        Write-Host -ForegroundColor DarkBlue "https://config.office.com/deploymentsettings"
-        Write-Host -ForegroundColor DarkBlue "$($Language.TestConfigFileInfoHelp)"
+    if (-Not (Test-Path $ConfigPath)) {
+        Write-Host -ForegroundColor Red "$($Language.ConfigFile1 -f $ConfigPath)"
+        Write-Host -ForegroundColor DarkBlue "$ConfigGeneratorURL"
+        Write-Host -ForegroundColor DarkBlue "$($Language.ConfigFile2)"
         Show-Menu
         return $false
     }
     return $true
 }
 
-function Invoke-Office {
-    if (-Not (Test-SetupExe)) {
-        Write-Host -ForegroundColor Red "$($Language.InvokeOfficeNotFoundSetupExe)"
-        return
+function Invoke-ODTExtraction {
+ 
+    if (-Not (Test-Path $ODTPath)) {
+        Write-Host "$($Language.NotFound -f $ODTPath) $($Language.DownloadInternet)"
+        Write-Information "$ODTDownloadURL"
+        
+        try {
+            Invoke-WebRequest -Uri $ODTDownloadURL -OutFile $ODTPath
+            Write-Host -ForegroundColor Green "$($Language.DownloadSuccess -f 'odt.exe')"
+        } catch {
+            Write-Host -ForegroundColor Red "$($Language.DownloadFailed -f 'odt.exe')"
+            return $false
+        }
     }
 
-    if (Test-Path "$GetScriptDir\office.old") {
-        Write-Host -ForegroundColor Yellow "$($Language.InvokeOfficeFoundOffice_old -f "$GetScriptDir\office.old" )"
-        Remove-Item -Path "$GetScriptDir\office.old" -Force -Recurse
-    }
-
-    if (Test-Path "$GetScriptDir\office") {
-        Write-Host -ForegroundColor Yellow ($Language.InvokeOfficeFoundOffice -f "$GetScriptDir\office", "$GetScriptDir\office.old")
-        Move-Item -Path "$GetScriptDir\office" -Destination "$GetScriptDir\office.old" -Force
-    }
-
-    if (-Not (Test-ConfigFile)) {
-        return
-    }
-
-    $SetupPath = "$GetScriptDir\setup.exe"
-    Write-Host -ForegroundColor Green "$($Language.Starting -f $SetupPath) [Download]"
-    Write-Host -ForegroundColor Yellow "$($Language.InvokeOfficeInfo)"
-    Write-Host -ForegroundColor Yellow "$($Language.InvokeOfficeInfo1 -f "$GetScriptDir\office")"
-    & $SetupPath /download $Global:ConfigPath
+    Write-Host -ForegroundColor Cyan "$($Language.Extracting -f 'odt.exe')"
+    & $ODTPath /extract:$GetScriptDir /quiet
     if ($LASTEXITCODE -eq 0) {
-        Write-Host -ForegroundColor Green "$($Language.InvokeOfficeDownload)"
+        Write-Host -ForegroundColor Green "$($Language.AddedSuccess -f 'setup.exe')"
+        return $true
     } else {
-        Write-Host -ForegroundColor Red "$($Language.InvokeOfficeDownloadNot)"
+        Write-Host -ForegroundColor Red "$($Language.ExtractingFailed -f 'setup.exe')"
+        return $false
     }
 }
 
+function Invoke-Office {
+
+    if (-Not (Test-ODT)) {
+        return
+    }
+
+    if (-Not (Test-Setup)) {
+        return
+    }
+
+    if (-Not (Test-ConfigFile)) {
+        return
+    }
+    Write-Host -ForegroundColor Green "$($Language.Starting -f $SetupPath)"
+    Write-Host -ForegroundColor Yellow "$($Language.InvokeOfficeInfo)"
+    Write-Host -ForegroundColor Yellow "$($Language.InvokeOfficeInfo1 -f "$GetOfficePath")"
+    & $SetupPath /download $ConfigPath
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host -ForegroundColor Green "$($Language.DownloadSuccessOffice -f 'office')"
+    } else {
+        Write-Host -ForegroundColor Red "$($Language.DownloadFailedOffice -f 'office')"
+    }
+    Write-Host "`a"
+}
+
 function Install-Office {
-    if (-Not (Test-SetupExe)) {
-        Write-Host -ForegroundColor Red "$($Language.TestSetupExe)"
+    if (-Not (Test-ODT)) {
+        return
+    }
+
+    if (-Not (Test-Setup)) {
         return
     }
 
@@ -111,19 +120,19 @@ function Install-Office {
         return
     }
 
-    if (-Not (Test-Path "$GetScriptDir\office")) {
-        Write-Host -ForegroundColor Yellow "$($Language.InstallOfficeFoundOfficeNot)"
-        Invoke-Office
+    if (-Not (Test-Path "$GetOfficePath")) {
+    Write-Host -ForegroundColor Yellow "$($Language.NotFound -f "$GetOfficePath")"
+    return 
     }
 
-    $SetupPath = "$GetScriptDir\setup.exe"
-    Write-Host -ForegroundColor Green "$($Language.Starting -f $SetupPath) [Install]"
-    & $SetupPath /configure $Global:ConfigPath
+    Write-Host -ForegroundColor Green "$($Language.Starting -f $SetupPath)"
+    & $SetupPath /configure $ConfigPath
     if ($LASTEXITCODE -eq 0) {
-        Write-Host -ForegroundColor Green "$($Language.InstallOfficeDownload)"
+        Write-Host -ForegroundColor Green "$($Language.InstallSuccessOffice -f 'office')"
     } else {
-        Write-Host -ForegroundColor Red "$($Language.InstallOfficeDownloadNot)"
+        Write-Host -ForegroundColor Red "$($Language.InstallFailedOffice -f 'office')"
     }
+    Write-Host "`a"
 }
 
 function Set-ConfigPath {
@@ -135,7 +144,7 @@ function Set-ConfigPath {
         $newConfigPath = $OpenFileDialog.FileName
         if (Test-Path $newConfigPath) {
             $Global:ConfigPath = $newConfigPath
-            Write-Host -ForegroundColor Green "$($Language.SetConfigSuccessPath -f $Global:ConfigPath)"
+            Write-Host -ForegroundColor Green "$($Language.SetConfigSuccessPath -f $ConfigPath)"
             Write-Warning "$($Language.SetConfigSuccessWarn)"
             Write-host
         } else {
@@ -146,29 +155,40 @@ function Set-ConfigPath {
 }
 
 function Show-Menu {
-    Write-Host -ForegroundColor Green "$($Language.ShowMenuConfigPath) $Global:ConfigPath"
-    Write-Host -ForegroundColor Cyan "$($Language.ShowMenuOfficePath) $GetScriptDir\office"
+    Write-Host -ForegroundColor Magenta "Github: https://github.com/herrwinfried/odt-script"
+    Write-Host -ForegroundColor Green "$($Language.ShowMenuConfigPath -f $ConfigPath)"
+    Write-Host -ForegroundColor Cyan "$($Language.ShowMenuOfficePath -f $GetOfficePath)"
     Write-Host ""
     Write-Host -ForegroundColor DarkYellow "$($Language.ShowMenuSelection)`n"
     Write-Host -ForegroundColor Red "[0] $($Language.ShowMenuZero)"
-    Write-Host -ForegroundColor DarkGray "[1] $($Language.ShowMenuOne)"
+    Write-Host -ForegroundColor DarkCyan "[1] $($Language.ShowMenuOne)"
     Write-Host -ForegroundColor DarkBlue "[2] $($Language.ShowMenuTwo)"
-    Write-Host -ForegroundColor DarkRed "[3] $($Language.ShowMenuFour)"
-    $choice = Read-Host "$($Language.ShowMenuInput) (1, 2 or 3)"
+    Write-Host -ForegroundColor DarkBlue "[3] $($Language.ShowMenuThree)"
+    Write-Host -ForegroundColor DarkMagenta "[4] $($Language.ShowMenuFour)"
+    $choice = Read-Host "$($Language.ShowMenuInput)"
     
     switch ($choice) {
         0 {
             Exit 0
         }
         1 {
+            Write-Host -ForegroundColor DarkGreen "`n$($Language.Starting -f $Language.ShowMenuTwo)`n"
             Invoke-Office
-            Show-Menu
-        }
-        2 {
+            Write-Host -ForegroundColor DarkGreen "`n$($Language.Starting -f $Language.ShowMenuThree)`n"
             Install-Office
             Show-Menu
         }
+        2 {
+            Write-Host -ForegroundColor DarkGreen "`n$($Language.Starting -f $Language.ShowMenuTwo)`n"
+            Invoke-Office
+            Show-Menu
+        }
         3 {
+            Write-Host -ForegroundColor DarkGreen "`n$($Language.Starting -f $Language.ShowMenuThree)`n"
+            Install-Office
+            Show-Menu
+        }
+        4 {
             Set-ConfigPath
             Show-Menu
         }
