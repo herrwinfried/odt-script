@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Dağıtım Aracı PowerShell Script</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Microsoft_365_%282022%29.svg/1862px-Microsoft_365_%282022%29.svg.png" width="150" height="150">
+        <img src="https://raw.githubusercontent.com/PowerShell/PowerShell/master/assets/ps_black_64.svg?sanitize=true" width="150" height="150">
+        <p><b>Office Deployment Tool Kullanımını Kolaylaştırmak İçin PowerShell Script</b></p>
+    </div>
+    <div class="center">
+        <img src="../assets/image/odt-script.png" height="400" alt="ODT Script">
+    </div>
+    <h1>Office Dağıtım Aracı PowerShell Script</h1>
+    <p>Bu PowerShell script, Office Deployment Tool kullanımını kolaylaştırmak için basit ve etkileşimli bir arayüz sağlar.</p>
+
+    <h2>Kullanım</h2>
+
+    <h3>Seçenek 1: Yükleyici ile Çalıştırma</h3>
+    <p><code>installer.bat</code> dosyasına çift tıklayın.</p>
+
+    <h4>VEYA</h4>
+    <p>Aşağıdaki PowerShell komutunu çalıştırın:</p>
+    <pre><code>start powershell.exe -ExecutionPolicy Bypass -File .\installer.ps1
+</code></pre>
+
+    <h3>Seçenek 2: Komut Satırı Arayüzünde (CLI) Çalıştırma</h3>
+    <pre><code>Kullanım: 
+    .\installer.ps1 [-h] [-c &lt;ConfigFile&gt;] [-i] [-d]
+
+Parametreler:
+    -h, -?, -Help
+        Bu yardım mesajını görüntüler.
+
+    -c, -ConfigFile &lt;ConfigFile&gt;
+        Kullanılacak yapılandırma dosyasını belirtir.
+
+    -i, -Install
+        Kurulum sürecini başlatır.
+
+    -d, -Download
+        İndirme sürecini başlatır.
+</code></pre>
+
+    <h4>Örnek Komut</h4>
+    <pre><code>powershell.exe -ExecutionPolicy Bypass -File .\installer.ps1 -i -d
+</code></pre>
+
+    <h2>Faydalı Bağlantılar</h2>
+    <ul>
+        <li><a href="https://config.office.com/">config.office.com</a> (<a href="https://learn.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options">Dokümantasyon</a>)
+            <ul>
+                <li>Office dağıtımı için yapılandırma dosyalarını oluşturmanın kolay bir yolu.</li>
+            </ul>
+        </li>
+        <li><a href="https://aka.ms/SaRA-OfficeUninstallFromPC">SetupProd_OffScrub.exe</a> (<a href="https://support.microsoft.com/en-us/office/uninstall-office-automatically-9ad57b43-fa12-859a-9cf0-b694637b3b05">Dokümantasyon</a>)
+            <ul>
+                <li>Office kurulumu bozulduğunda yardımcı olan bu uygulama ile Office'i kaldırabilir ve yeniden yükleyebilirsiniz. Özellikle kaldırma işlemleri için kullanışlıdır.</li>
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>

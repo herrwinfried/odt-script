@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office Deployment Tool PowerShell Script</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Microsoft_365_%282022%29.svg/1862px-Microsoft_365_%282022%29.svg.png" width="150" height="150">
+        <img src="https://raw.githubusercontent.com/PowerShell/PowerShell/master/assets/ps_black_64.svg?sanitize=true" width="150" height="150">
+        <p><b>Powershell Script to Simplify Office Deployment Tool Usage</b></p>
+    </div>
+    <div class="center" >
+    <img src="../assets/image/odt-script.png" height="400" alt="ODT Script">
+</div>
+    <h1>Office Deployment Tool PowerShell Script</h1>
+    <p>This PowerShell script is designed to make the Office Deployment Tool easier to use by providing a simple and interactive interface.</p>
+
+    <h2>Usage</h2>
+
+    <h3>Option 1: Run with Installer</h3>
+    <p>Double-click the <code>installer.bat</code> file.</p>
+
+    <h4>OR</h4>
+    <p>Run the following PowerShell command:</p>
+    <pre><code>start powershell.exe -ExecutionPolicy Bypass -File .\installer.ps1
+</code></pre>
+
+    <h3>Option 2: Run in Command Line Interface (CLI)</h3>
+    <pre><code>Usage: 
+    .\installer.ps1 [-h] [-c &lt;ConfigFile&gt;] [-i] [-d]
+
+Parameters:
+    -h, -?, -Help
+        Displays this help message.
+
+    -c, -ConfigFile &lt;ConfigFile&gt;
+        Specifies the configuration file to be used.
+
+    -i, -Install
+        Triggers the installation process.
+
+    -d, -Download
+        Starts the download process.
+</code></pre>
+
+    <h4>Example Command</h4>
+    <pre><code>powershell.exe -ExecutionPolicy Bypass -File .\installer.ps1 -i -d
+</code></pre>
+
+    <h2>Useful Links</h2>
+    <ul>
+        <li><a href="https://config.office.com/">config.office.com</a> (<a href="https://learn.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options">Documentation</a>)
+            <ul>
+                <li>An easy way to create configuration files for Office deployment.</li>
+            </ul>
+        </li>
+        <li><a href="https://aka.ms/SaRA-OfficeUninstallFromPC">SetupProd_OffScrub.exe</a> (<a href="https://support.microsoft.com/en-us/office/uninstall-office-automatically-9ad57b43-fa12-859a-9cf0-b694637b3b05">Documentation</a>)
+            <ul>
+                <li>This application helps when the Office installation is corrupted. It can be used to uninstall and reinstall Office, and is particularly useful for uninstallation purposes.</li>
+            </ul>
+        </li>
+    </ul>
+</body>
+</html>

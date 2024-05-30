@@ -64,4 +64,18 @@
     ShowMenuFour = 'Yapılandırmayı Değiştir'
     # You made an invalid selection.
     ShowMenuInvalid = 'Geçersiz bir seçim yaptınız.'
+
+    # Usage:
+    HelpUsage = 'Kullanım:'
+    # Parameters:
+    HelpParam = 'Parametreler:'
+    # Displays this help message.
+    Helphelp = 'Bu yardım mesajını görüntüler.'
+    # Specifies the configuration file to be used.
+    HelpConfig = 'Kullanılacak yapılandırma dosyasını belirtir.'
+    # Triggers the installation process.
+    HelpInstall = 'Kurulum sürecini başlatır.'
+    # Starts the download process.
+    HelpDownload = 'İndirme sürecini başlatır.'
+
 }

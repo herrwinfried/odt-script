@@ -1,3 +1,13 @@
+param(
+    [Alias("h", "?")]
+    [switch]$Help,
+    [Alias("c")]
+    [string]$ConfigFile,
+    [Alias("i")]
+    [switch]$Install,
+    [Alias("d")]
+    [switch]$Download
+)
 $GetScriptDir = $PSScriptRoot
 [string]$GetScriptName = [System.IO.Path]::GetFileNameWithoutExtension($MyInvocation.MyCommand.Name)
 
@@ -154,11 +164,15 @@ function Set-ConfigPath {
     }
 }
 
-function Show-Menu {
+function Show-Welcome {
     Write-Host -ForegroundColor Magenta "Github: https://github.com/herrwinfried/odt-script"
     Write-Host -ForegroundColor Green "$($Language.ShowMenuConfigPath -f $ConfigPath)"
     Write-Host -ForegroundColor Cyan "$($Language.ShowMenuOfficePath -f $GetOfficePath)"
     Write-Host ""
+}
+
+function Show-Menu {
+    Show-Welcome
     Write-Host -ForegroundColor DarkYellow "$($Language.ShowMenuSelection)`n"
     Write-Host -ForegroundColor Red "[0] $($Language.ShowMenuZero)"
     Write-Host -ForegroundColor DarkCyan "[1] $($Language.ShowMenuOne)"
@@ -201,4 +215,53 @@ function Show-Menu {
     }
 }
 
+if ($ConfigFile) {
+    if (Test-Path $ConfigFile) {
+        [string]$Global:ConfigPath = $ConfigFile
+    Write-Host -ForegroundColor Green "$($Language.SetConfigSuccessPath -f $ConfigFile)"
+    Write-Warning "$($Language.SetConfigSuccessWarn)"
+    Write-host
+} else {
+    Write-Host -ForegroundColor Red "$($Language.SetConfigFailedPath -f $ConfigFile)"
+    Write-host
+}
+}
+if ($Help) {
+    $helpText = @"
+    $($Language.HelpUsage) 
+        .\$GetScriptName.ps1 [-h] [-c <ConfigFile>] [-i] [-d]
+
+    $($Language.HelpParam)
+        -h, -?, -Help
+            $($Language.Helphelp)
+
+        -c, -ConfigFile <ConfigFile>
+            $($Language.HelpConfig)
+
+        -i, -Install
+            $($Language.HelpInstall)
+
+        -d, -Download
+            $($Language.HelpDownload)
+"@
+    Write-Output $helpText
+    exit 1
+}
+
+if ((-Not ($Install)) -and (-Not ($Download))) {
 Show-Menu
+}
+elseif (($Install) -or ($Download)) {
+    Show-Welcome
+
+    if ($Download) {
+        Write-Host -ForegroundColor DarkGreen "`n$($Language.Starting -f $Language.ShowMenuTwo)`n"
+        Invoke-Office
+        Read-Host
+    }
+    if ($Install) {
+        Write-Host -ForegroundColor DarkGreen "`n$($Language.Starting -f $Language.ShowMenuThree)`n"
+        Install-Office
+        Read-Host
+    }
+}

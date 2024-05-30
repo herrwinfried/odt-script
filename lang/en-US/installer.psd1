@@ -64,4 +64,17 @@
     ShowMenuFour = 'Change Configuration'
     # You made an invalid selection.
     ShowMenuInvalid = 'You made an invalid selection.'
+
+    # Usage:
+    HelpUsage = 'Usage:'
+    # Parameters:
+    HelpParam = 'Parameters:'
+    # Displays this help message.
+    Helphelp = 'Displays this help message.'
+    # Specifies the configuration file to be used.
+    HelpConfig = 'Specifies the configuration file to be used.'
+    # Triggers the installation process.
+    HelpInstall = 'Triggers the installation process.'
+    # Starts the download process.
+    HelpDownload = 'Starts the download process.'
 }
