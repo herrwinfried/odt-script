@@ -11,6 +11,27 @@ param(
 $GetScriptDir = $PSScriptRoot
 [string]$GetScriptName = [System.IO.Path]::GetFileNameWithoutExtension($MyInvocation.MyCommand.Name)
 
+Function Test-CommandExists {
+    Param ($command)
+    $oldPreference = $ErrorActionPreference
+     
+    $ErrorActionPreference = "stop"
+    try { if (Get-Command $command) { return $True } }
+     
+    Catch { return $False }
+     
+    Finally { $ErrorActionPreference = $oldPreference }
+}
+
+function Test-isWindows {
+    if ((-Not (Test-CommandExists Get-WmiObject)) -or ($IsLinux) -or ($IsMacOS)) {
+        Write-Host -ForegroundColor Red "This powershell script is designed to be used on windows. Please check your operating system."
+        Exit 1;
+    }
+}
+
+Test-isWindows
+
 # Language support
 if (-Not ($Lang)) { $Lang = $PSUICulture }
 $GetLanguageFile = "$PSScriptRoot/lang/$Lang/$GetScriptName.psd1"
